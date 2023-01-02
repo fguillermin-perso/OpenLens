@@ -1,9 +1,11 @@
-Name: Clear Latest
+name: Clear Latest
 
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**/README.md'
           
 jobs:
   build:
