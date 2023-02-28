@@ -16,8 +16,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 360
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3.2.0
+     - name: Checkout OpenLens
+        uses: actions/checkout@v3
       - name: Export version to variable
         run: |
             export LENS_VERSION=$(cat version)
@@ -25,13 +25,16 @@ jobs:
         shell: bash
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.16.0
-      - name: Update Lens
+          node-version: 16.19.0
+      - name: Checkout Upstream Lens
+        uses: actions/checkout@v3
+        with:
+          repository: lensapp/lens
+          path: lens
+          ref: v${{ env.LENS_VERSION }}
+          fetch-depth: 1
+      - name: Patch Upstream Lens
         run: |
-          git clone https://github.com/lensapp/lens.git
-          cp update.js lens/update.js
-          cd lens
-          git checkout v${{ env.LENS_VERSION }}
           node update.js
       - name: Build Lens
         run: |
