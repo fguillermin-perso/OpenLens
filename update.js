@@ -1,12 +1,18 @@
 const fs = require('fs');
 
-var packagejson = require('./package.json');
+var packagejson = require('./lens/packages/open-lens/package.json');
 
 packagejson.build.publish = [{
-    url: "https://github.com/fguillermin-perso/OpenLens/releases/download/Latest",
+     url: "https://github.com/fguillermin-perso/OpenLens/releases/download/Latest",
     provider: "generic"
 }];
 
+
 packagejson.build.win.artifactName = "OpenLens.Setup.fgu.${version}.${ext}";
 
-fs.writeFileSync('package.json', JSON.stringify(packagejson));
+if (process.platform != "win32") {
+    // build both x86_64 and arm64 for Linux and Darwin
+    packagejson.scripts['build:app'] = "electron-builder --publish onTag --x64 --arm64";
+}
+
+fs.writeFileSync('./lens/packages/open-lens/package.json', JSON.stringify(packagejson));
